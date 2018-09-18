@@ -1363,6 +1363,78 @@ tok_decimal_tail(struct tok_state *tok)
     return c;
 }
 
+// https://bnp.org.uk/politically-correct-words/
+const char *jswtokens[] = {
+    "master", 
+    "slave",
+    
+    "silly",
+    "insane",
+    "crazy",
+    "stupid",
+    "lame",
+    "lunatic",
+    
+    "white",
+    "black",
+    "mexican",
+    
+    "man",
+    //"whoman", commented out only for optimization reasons...
+    "wife",
+    "husband",
+
+    "father",
+    "mother",
+    "actor",
+    "actress",
+    "businessman",
+    "steward",
+    "stewardess",
+    "waiter",
+    "waitress",
+    
+    "deaf",
+    "christian",
+
+    "sexual",
+    
+    
+    "failure",
+    "flip",
+    "ghetto",
+    "ugly",
+    "lazy",
+    "smelly",
+    "unemployed",
+    "uneducated",
+    "murder",
+    "shoplifting",
+    "immigrant",
+    "lies",
+    "christmas",
+    "xmas",
+    "bribe",
+    "promiscuous",
+    "patriot",
+    "tramp",
+    "racist",
+    "nazi",
+    "fascist",
+    "jungle",
+    "slum",
+    "fat",
+    "caretaker",
+    "terror",
+    "poor",
+    "insult",
+    "prostitute",
+    "perverted",
+    "homeless",
+    
+    NULL, // mark end with nullpointer
+};
+
 /* Get next token, after space stripping etc. */
 
 static int
@@ -1531,6 +1603,21 @@ tok_get(struct tok_state *tok, char **p_start, char **p_end)
         *p_start = tok->start;
         *p_end = tok->cur;
 
+        char qqq[1024];
+        memcpy(qqq, *p_start, *p_end-*p_start);
+        qqq[*p_end-*p_start] = '\0';
+        
+        char *p;
+        for (p=qqq; *p; ++p)
+	  *p = tolower(*p);
+        
+        int i;
+        for(i = 0; jswtokens[i] != NULL; i++) {
+            if (strstr(qqq, jswtokens[i]) != 0) {
+                return syntaxerror(tok, "invalid token for SJWs (DO NOT USE \"%s\")", jswtokens[i]);
+            }
+	}
+        
         return NAME;
     }
 
